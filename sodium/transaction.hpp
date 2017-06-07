@@ -4,16 +4,16 @@
  *
  * C++ implementation courtesy of International Telematics Ltd.
  */
-#ifndef _SODIUM_TRANSACTION_H_
-#define _SODIUM_TRANSACTION_H_
+#ifndef _SODIUM_TRANSACTION_HPP_
+#define _SODIUM_TRANSACTION_HPP_
 
-#include <sodium/config.h>
-#include <sodium/count_set.h>
-#include <sodium/light_ptr.h>
-#include <sodium/lock_pool.h>
+#include <sodium/config.hpp>
+#include <sodium/count_set.hpp>
+#include <sodium/light_ptr.hpp>
+#include <sodium/lock_pool.hpp>
 #include <boost/optional.hpp>
 #include <boost/intrusive_ptr.hpp>
-#include <sodium/unit.h>
+#include <sodium/unit.hpp>
 #include <map>
 #include <set>
 #include <list>

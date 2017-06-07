@@ -4,8 +4,8 @@
  *
  * C++ implementation courtesy of International Telematics Ltd.
  */
-#ifndef _SODIUM_CONFIG_H_
-#define _SODIUM_CONFIG_H_
+#ifndef _SODIUM_CONFIG_HPP_
+#define _SODIUM_CONFIG_HPP_
 
 #include <limits.h>  // for __WORDSIZE
 #if defined(SODIUM_EXTRA_INCLUDE)

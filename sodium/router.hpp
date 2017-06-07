@@ -1,9 +1,9 @@
 // $Id$
 
-#ifndef _SODIUM_ROUTER_H_
-#define _SODIUM_ROUTER_H_
+#ifndef _SODIUM_ROUTER_HPP_
+#define _SODIUM_ROUTER_HPP_
 
-#include <sodium/sodium.h>
+#include <sodium/sodium.hpp>
 #include <map>
 
 namespace sodium {

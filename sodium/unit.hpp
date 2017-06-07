@@ -4,8 +4,8 @@
  *
  * C++ implementation courtesy of International Telematics Ltd.
  */
-#ifndef _SODIUM_UNIT_H_
-#define _SODIUM_UNIT_H_
+#ifndef _SODIUM_UNIT_HPP_
+#define _SODIUM_UNIT_HPP_
 
 namespace sodium {
     /*!

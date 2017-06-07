@@ -4,8 +4,8 @@
  *
  * C++ implementation courtesy of International Telematics Ltd.
  */
-#ifndef _SODIUM_LIGHTPTR_H_
-#define _SODIUM_LIGHTPTR_H_
+#ifndef _SODIUM_LIGHTPTR_HPP_
+#define _SODIUM_LIGHTPTR_HPP_
 
 #include <utility>
 

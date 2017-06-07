@@ -4,10 +4,10 @@
  *
  * C++ implementation courtesy of International Telematics Ltd.
  */
-#ifndef _SODIUM_LOCKPOOL_H_
-#define _SODIUM_LOCKPOOL_H_
+#ifndef _SODIUM_LOCKPOOL_HPP_
+#define _SODIUM_LOCKPOOL_HPP_
 
-#include <sodium/config.h>
+#include <sodium/config.hpp>
 
 #ifdef __APPLE__
 #include <libkern/OSAtomic.h>

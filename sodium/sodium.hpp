@@ -4,11 +4,11 @@
  *
  * C++ implementation courtesy of International Telematics Ltd.
  */
-#ifndef _SODIUM_SODIUM_H_
-#define _SODIUM_SODIUM_H_
+#ifndef _SODIUM_SODIUM_HPP_
+#define _SODIUM_SODIUM_HPP_
 
-#include <sodium/light_ptr.h>
-#include <sodium/transaction.h>
+#include <sodium/light_ptr.hpp>
+#include <sodium/transaction.hpp>
 #include <functional>
 #include <boost/optional.hpp>
 #include <memory>

@@ -5,7 +5,7 @@
  * C++ implementation courtesy of International Telematics Ltd.
  */
  
-#include <sodium/lock_pool.h>
+#include <sodium/lock_pool.hpp>
 
 
 namespace sodium {

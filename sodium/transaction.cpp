@@ -4,7 +4,7 @@
  *
  * C++ implementation courtesy of International Telematics Ltd.
  */
-#include <sodium/sodium.h>
+#include <sodium/sodium.hpp>
 #if !defined(SODIUM_SINGLE_THREADED) && defined(SODIUM_USE_PTHREAD_SPECIFIC)
 #include <pthread.h>
 #endif

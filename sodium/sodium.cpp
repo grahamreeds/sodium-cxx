@@ -4,7 +4,7 @@
  *
  * C++ implementation courtesy of International Telematics Ltd.
  */
-#include <sodium/sodium.h>
+#include <sodium/sodium.hpp>
 
 using namespace std;
 using namespace boost;

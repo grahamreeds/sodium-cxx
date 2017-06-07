@@ -4,10 +4,10 @@
  *
  * C++ implementation courtesy of International Telematics Ltd.
  */
-#ifndef _SODIUM_COUNT_SET_H_
-#define _SODIUM_COUNT_SET_H_
+#ifndef _SODIUM_COUNT_SET_HPP_
+#define _SODIUM_COUNT_SET_HPP_
 
-#include <sodium/config.h>
+#include <sodium/config.hpp>
 #include <limits.h>
 #include <assert.h>
 

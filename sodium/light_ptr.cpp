@@ -4,8 +4,8 @@
  *
  * C++ implementation courtesy of International Telematics Ltd.
  */
-#include <sodium/light_ptr.h>
-#include <sodium/lock_pool.h>
+#include <sodium/light_ptr.hpp>
+#include <sodium/lock_pool.hpp>
 
 namespace sodium {
 #define SODIUM_DEFINE_LIGHTPTR(Name, GET_AND_LOCK, UNLOCK) \

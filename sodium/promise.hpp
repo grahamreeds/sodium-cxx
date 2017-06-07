@@ -1,7 +1,7 @@
-#ifndef _SODIUM_PROMISE_H_
-#define _SODIUM_PROMISE_H_
+#ifndef _SODIUM_PROMISE_HPP_
+#define _SODIUM_PROMISE_HPP_
 
-#include <sodium/sodium.h>
+#include <sodium/sodium.hpp>
 #include <memory>
 
 namespace sodium {

@@ -1,7 +1,7 @@
-#ifndef _SODIUM_TIME_AT_H_
-#define _SODIUM_TIME_AT_H_
+#ifndef _SODIUM_TIME_HPP_
+#define _SODIUM_TIME_HPP_
 
-#include <sodium/sodium.h>
+#include <sodium/sodium.hpp>
 #include <memory>
 #include <boost/optional.hpp>
 #include <set>

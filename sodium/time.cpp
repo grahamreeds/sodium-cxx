@@ -1,4 +1,4 @@
-#include <sodium/time.h>
+#include <sodium/time.hpp>
 
 namespace sodium {
     namespace impl {
