@@ -5,9 +5,6 @@
  * C++ implementation courtesy of International Telematics Ltd.
  */
 #include <sodium/sodium.hpp>
-#if !defined(SODIUM_SINGLE_THREADED) && defined(SODIUM_USE_PTHREAD_SPECIFIC)
-#include <pthread.h>
-#endif
 
 using namespace std;
 using namespace boost;
@@ -16,8 +13,6 @@ namespace sodium {
 
 #if defined(SODIUM_SINGLE_THREADED)
     static impl::transaction_impl* global_current_transaction;
-#elif defined(SODIUM_USE_PTHREAD_SPECIFIC)
-    static pthread_key_t current_transaction_key;
 #else
     static thread_local impl::transaction_impl* global_current_transaction;
 #endif
@@ -84,9 +79,6 @@ namespace sodium {
           processing_on_start_hooks(false),
           shutting_down(false)
     {
-#if !defined(SODIUM_SINGLE_THREADED) && defined(SODIUM_USE_PTHREAD_SPECIFIC)
-        pthread_key_create(&current_transaction_key, NULL);
-#endif
     }
                             
     partition::~partition()
@@ -326,11 +318,7 @@ namespace sodium {
                     }
                 }
                 impl_ = new transaction_impl;
-#if !defined(SODIUM_SINGLE_THREADED) && defined(SODIUM_USE_PTHREAD_SPECIFIC)
-                pthread_setspecific(current_transaction_key, impl_);
-#else
                 global_current_transaction = impl_;
-#endif
             }
             transaction_impl::part->depth++;
         }
@@ -342,11 +330,7 @@ namespace sodium {
 
         /*static*/ transaction_impl* transaction_::current_transaction()
         {
-#if !defined(SODIUM_SINGLE_THREADED) && defined(SODIUM_USE_PTHREAD_SPECIFIC)
-            return reinterpret_cast<transaction_impl*>(pthread_getspecific(current_transaction_key));
-#else
             return global_current_transaction;
-#endif
         }
 
         void transaction_::close()
@@ -359,20 +343,12 @@ namespace sodium {
                     try {
                         impl__->process_transactional();
                         part->depth--;
-#if !defined(SODIUM_SINGLE_THREADED) && defined(SODIUM_USE_PTHREAD_SPECIFIC)
-                        pthread_setspecific(current_transaction_key, NULL);
-#else
                         global_current_transaction = NULL;
-#endif
                         delete impl__;
                     }
                     catch (...) {
                         part->depth--;
-#if !defined(SODIUM_SINGLE_THREADED) && defined(SODIUM_USE_PTHREAD_SPECIFIC)
-                        pthread_setspecific(current_transaction_key, NULL);
-#else
                         global_current_transaction = NULL;
-#endif
                         delete impl__;
 #if !defined(SODIUM_SINGLE_THREADED)
                         part->mx.unlock();
