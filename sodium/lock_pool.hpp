@@ -9,12 +9,7 @@
 
 #include <sodium/config.hpp>
 
-#ifdef __APPLE__
-#include <libkern/OSAtomic.h>
-#elif defined(__TI_COMPILER_VERSION__)
-#else
 #include <mutex>
-#endif
 #include <stdint.h>
 #include <limits.h>
 
@@ -24,31 +19,6 @@ namespace sodium {
 #if defined(SODIUM_SINGLE_THREADED)
             inline void lock() {}
             inline void unlock() {}
-#elif defined(__APPLE__)
-            OSSpinLock sl;
-            spin_lock() : sl(OS_SPINLOCK_INIT) {
-            }
-            inline void lock() {
-                OSSpinLockLock(&sl);
-            }
-            inline void unlock() {
-                OSSpinLockUnlock(&sl);
-            }
-#elif defined(HAVE_PTHREAD_SPIN_LOCK)
-            bool initialized;
-            pthread_spinlock_t sl;
-            spin_lock() : initialized(true) {
-                pthread_spin_init(&sl, PTHREAD_PROCESS_PRIVATE);
-            }
-            inline void lock() {
-                // Make sure nothing bad happens if this is called before the constructor.
-                // This can happen during static initialization if data structures that use
-                // this lock pool are declared statically.
-                if (initialized) pthread_spin_lock(&sl);
-            }
-            inline void unlock() {
-                if (initialized) pthread_spin_unlock(&sl);
-            }
 #else
             bool initialized;
             std::mutex m;
