@@ -5,16 +5,14 @@ set( CMAKE_INSTALL_PREFIX /usr/local )
 project(sodium)
 include(CheckCXXCompilerFlag)
 
-check_cxx_compiler_flag("-std=c++11" SUPPORTS_CXX11)
-if( SUPPORTS_CXX11 )
-    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+if(MSVC12 OR MSVC14)
+    # has the support we need
 else()
-    check_cxx_compiler_flag("-std=c++0x" SUPPORTS_CXX0X)
-    if( SUPPORTS_CXX0X )
-        set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+    check_cxx_compiler_flag("-std=c++11" SUPPORTS_CXX11)
+    if( SUPPORTS_CXX11 )
+        set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
     else()
-        message("C++11 is not supported")
-        add_definitions(-DSODIUM_NO_CXX11)
+        message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a C++11 compliant compiler.")
     endif()
 endif()
 
@@ -27,7 +25,7 @@ find_package( Boost REQUIRED )
 
 file( GLOB_RECURSE 
     SODIUM_INCLUDE_FILES 
-    ${SODIUM_BASE_DIR}/*.h
+    ${SODIUM_BASE_DIR}/*.hpp
     )
 
 file( GLOB_RECURSE 
