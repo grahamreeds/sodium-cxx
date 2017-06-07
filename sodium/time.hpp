@@ -104,8 +104,8 @@ namespace sodium {
         public:
             timer_system_base(
                 cell<T> time_,
-                SODIUM_SHARED_PTR<timer_system_impl<T>> impl_,
-                SODIUM_SHARED_PTR<thread_safe_priority_queue<event<T>>> event_queue_
+                std::shared_ptr<timer_system_impl<T>> impl_,
+                std::shared_ptr<thread_safe_priority_queue<event<T>>> event_queue_
             ) : time(time_), impl(impl_), event_queue(event_queue_)
             {}
 
@@ -115,7 +115,7 @@ namespace sodium {
                 boost::optional<event<T>> current;
                 boost::optional<std::function<void()>> cancel_current;
                 boost::optional<T> tAl;
-                void do_cancel(const SODIUM_SHARED_PTR<thread_safe_priority_queue<event<T>>>& event_queue)
+                void do_cancel(const std::shared_ptr<thread_safe_priority_queue<event<T>>>& event_queue)
                 {
                     if (this->cancel_current) {
                         this->cancel_current.get()();
@@ -133,7 +133,7 @@ namespace sodium {
 
                 stream_sink<T> sAlarm_snk;
 
-                SODIUM_SHARED_PTR<at_state> state(new at_state);
+                std::shared_ptr<at_state> state(new at_state);
                 const auto& impl_(this->impl);
                 const auto& event_queue_(this->event_queue);
                 auto kill = tAlarm.value().listen(
@@ -160,8 +160,8 @@ namespace sodium {
             }
             cell<T> time;
         private:
-            SODIUM_SHARED_PTR<timer_system_impl<T>> impl;
-            SODIUM_SHARED_PTR<thread_safe_priority_queue<event<T>>> event_queue;
+            std::shared_ptr<timer_system_impl<T>> impl;
+            std::shared_ptr<thread_safe_priority_queue<event<T>>> event_queue;
         };
     }
 
@@ -169,15 +169,15 @@ namespace sodium {
     class timer_system : public impl::timer_system_base<T>
     {
     public:
-        timer_system(SODIUM_SHARED_PTR<timer_system_impl<T>> impl_)
+        timer_system(std::shared_ptr<timer_system_impl<T>> impl_)
             : impl::timer_system_base<T>(construct(std::move(impl_)))
         {
         }
     private:
-        static impl::timer_system_base<T> construct(SODIUM_SHARED_PTR<timer_system_impl<T>> impl) {
+        static impl::timer_system_base<T> construct(std::shared_ptr<timer_system_impl<T>> impl) {
             transaction trans0;
             cell_sink<T> time_snk(impl->now());
-            SODIUM_SHARED_PTR<impl::thread_safe_priority_queue<impl::event<T>>> event_queue(
+            std::shared_ptr<impl::thread_safe_priority_queue<impl::event<T>>> event_queue(
                 new impl::thread_safe_priority_queue<impl::event<T>>);
             trans0.on_start([impl, time_snk, event_queue] () {
                 T t = impl->now();

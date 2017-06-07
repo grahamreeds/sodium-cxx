@@ -10,7 +10,7 @@ namespace sodium {
     namespace impl {
         template <typename Selector>
         struct routing_table {
-            routing_table(const impl::stream_& stream_, SODIUM_SHARED_PTR<impl::node> node_)
+            routing_table(const impl::stream_& stream_, std::shared_ptr<impl::node> node_)
             : node(node_),
               kill(NULL)
             {}
@@ -20,14 +20,14 @@ namespace sodium {
                     delete kill;
                 }
             }
-            SODIUM_SHARED_PTR<impl::node> node;
+            std::shared_ptr<impl::node> node;
             std::function<void()>* kill;
-            std::multimap<Selector, SODIUM_SHARED_PTR<impl::node>> table;
+            std::multimap<Selector, std::shared_ptr<impl::node>> table;
         };
 
         template <typename A, typename Selector>
         struct router_impl {
-            SODIUM_SHARED_PTR<routing_table<Selector>> table;
+            std::shared_ptr<routing_table<Selector>> table;
             std::vector<std::tuple<stream_loop<A>, Selector>> queued;
         };
     }
@@ -63,7 +63,7 @@ namespace sodium {
     {
         friend class router_loop<A, Selector>;
         protected:
-            SODIUM_SHARED_PTR<impl::router_impl<A, Selector>> impl;
+            std::shared_ptr<impl::router_impl<A, Selector>> impl;
 
             router()
             : impl(new impl::router_impl<A, Selector>)
@@ -73,17 +73,17 @@ namespace sodium {
             router(stream<A> in, std::function<Selector(const A&)> f)
             : impl(new impl::router_impl<A, Selector>)
             {
-                SODIUM_TUPLE<impl::stream_,SODIUM_SHARED_PTR<impl::node> > p = impl::unsafe_new_stream();
+                std::tuple<impl::stream_,std::shared_ptr<impl::node> > p = impl::unsafe_new_stream();
                 auto stream = std::get<0>(p);
                 auto target = std::get<1>(p);
                 transaction trans1;
-                impl->table = SODIUM_SHARED_PTR<impl::routing_table<Selector>>(new impl::routing_table<Selector>(stream, target));
+                impl->table = std::shared_ptr<impl::routing_table<Selector>>(new impl::routing_table<Selector>(stream, target));
                 auto table(impl->table);
                 table->kill = in.listen_raw(trans1.impl(), target,
                     new std::function<void(const std::shared_ptr<impl::node>&, impl::transaction_impl*, const light_ptr&)>(
-                        [f, table] (const SODIUM_SHARED_PTR<impl::node>&, impl::transaction_impl* trans2, const light_ptr& ptr) {
+                        [f, table] (const std::shared_ptr<impl::node>&, impl::transaction_impl* trans2, const light_ptr& ptr) {
                             Selector sel = f(*ptr.cast_ptr<A>(NULL));
-                            std::vector<SODIUM_SHARED_PTR<impl::node>> targets;
+                            std::vector<std::shared_ptr<impl::node>> targets;
                             for (auto it = table->table.lower_bound(sel);
                                     it != table->table.end() && it->first == sel;
                                     ++it)
@@ -95,7 +95,7 @@ namespace sodium {
 
             stream<A> filter_equals(Selector sel) const {
                 if (impl->table) {
-                    SODIUM_TUPLE<impl::stream_,SODIUM_SHARED_PTR<impl::node> > p = impl::unsafe_new_stream();
+                    std::tuple<impl::stream_,std::shared_ptr<impl::node> > p = impl::unsafe_new_stream();
                     auto target = std::get<1>(p);
                     auto table(impl->table);
     
@@ -137,7 +137,7 @@ namespace sodium {
 #if defined(SODIUM_NO_EXCEPTIONS)
                     abort();
 #else
-                    SODIUM_THROW("router_loop looped back more than once");
+                    throw std::runtime_error("router_loop looped back more than once");
 #endif
                 }
                 this->impl->table = r.impl->table;

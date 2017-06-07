@@ -56,7 +56,7 @@ namespace sodium {
             typedef std::function<std::function<void()>*(
                 transaction_impl*,
                 const std::shared_ptr<impl::node>&,
-                const SODIUM_SHARED_PTR<holder>&,
+                const std::shared_ptr<holder>&,
                 bool)> closure;
             listen_impl_func(closure* func_)
                 : func(func_) {}
@@ -66,7 +66,7 @@ namespace sodium {
             }
             count_set counts;
             closure* func;
-            SODIUM_FORWARD_LIST<std::function<void()>*> cleanups;
+            std::forward_list<std::function<void()>*> cleanups;
             inline void update_and_unlock(spin_lock* l) {
                 if (func && !counts.active()) {
                     counts.inc_strong();
@@ -98,7 +98,7 @@ namespace sodium {
                 ~holder() {
                     delete handler;
                 }
-                void handle(const SODIUM_SHARED_PTR<node>& target, transaction_impl* trans, const light_ptr& value) const;
+                void handle(const std::shared_ptr<node>& target, transaction_impl* trans, const light_ptr& value) const;
 
             private:
                 std::function<void(const std::shared_ptr<impl::node>&, transaction_impl*, const light_ptr&)>* handler;
@@ -129,12 +129,12 @@ namespace sodium {
                 struct target {
                     target(
                         void* h_,
-                        const SODIUM_SHARED_PTR<node>& n_
+                        const std::shared_ptr<node>& n_
                     ) : h(h_),
                         n(n_) {}
 
                     void* h;
-                    SODIUM_SHARED_PTR<node> n;
+                    std::shared_ptr<node> n;
                 };
 
             public:
@@ -143,14 +143,14 @@ namespace sodium {
                 ~node();
 
                 rank_t rank;
-                SODIUM_FORWARD_LIST<node::target> targets;
-                SODIUM_FORWARD_LIST<light_ptr> firings;
-                SODIUM_FORWARD_LIST<boost::intrusive_ptr<listen_impl_func<H_STREAM> > > sources;
+                std::forward_list<node::target> targets;
+                std::forward_list<light_ptr> firings;
+                std::forward_list<boost::intrusive_ptr<listen_impl_func<H_STREAM> > > sources;
                 boost::intrusive_ptr<listen_impl_func<H_NODE> > listen_impl;
 
-                bool link(void* holder, const SODIUM_SHARED_PTR<node>& target);
+                bool link(void* holder, const std::shared_ptr<node>& target);
                 void unlink(void* holder);
-                void unlink_by_target(const SODIUM_SHARED_PTR<node>& target);
+                void unlink_by_target(const std::shared_ptr<node>& target);
 
             private:
                 bool ensure_bigger_than(std::set<node*>& visited, rank_t limit);
@@ -176,15 +176,15 @@ namespace sodium {
             inline bool operator < (const entryID& other) const { return id < other.id; }
         };
 
-        rank_t rankOf(const SODIUM_SHARED_PTR<node>& target);
+        rank_t rankOf(const std::shared_ptr<node>& target);
 
         struct prioritized_entry {
-            prioritized_entry(SODIUM_SHARED_PTR<node> target_,
+            prioritized_entry(std::shared_ptr<node> target_,
                               std::function<void(transaction_impl*)> action_)
                 : target(std::move(target_)), action(std::move(action_))
             {
             }
-            SODIUM_SHARED_PTR<node> target;
+            std::shared_ptr<node> target;
             std::function<void(transaction_impl*)> action;
         };
 
@@ -199,7 +199,7 @@ namespace sodium {
             bool to_regen;
             int inCallback;
 
-            void prioritized(SODIUM_SHARED_PTR<impl::node> target,
+            void prioritized(std::shared_ptr<impl::node> target,
                              std::function<void(impl::transaction_impl*)> action);
             void last(const std::function<void()>& action);
 
@@ -237,7 +237,7 @@ namespace sodium {
              */
             inline void close() { impl::transaction_::close(); }
 
-            void prioritized(SODIUM_SHARED_PTR<impl::node> target,
+            void prioritized(std::shared_ptr<impl::node> target,
                              std::function<void(impl::transaction_impl*)> action)
             {
                 impl()->prioritized(std::move(target), std::move(action));

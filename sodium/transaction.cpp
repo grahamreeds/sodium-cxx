@@ -63,7 +63,7 @@ namespace sodium {
             p->update_and_unlock(l);
         }
         
-        void holder::handle(const SODIUM_SHARED_PTR<node>& target, transaction_impl* trans, const light_ptr& value) const
+        void holder::handle(const std::shared_ptr<node>& target, transaction_impl* trans, const light_ptr& value) const
         {
             if (handler)
                 (*handler)(target, trans, value);
@@ -138,8 +138,8 @@ namespace sodium {
         node::node(rank_t rank_) : rank(rank_) {}
         node::~node()
         {
-            for (SODIUM_FORWARD_LIST<node::target>::iterator it = targets.begin(); it != targets.end(); it++) {
-                SODIUM_SHARED_PTR<node> targ = it->n;
+            for (std::forward_list<node::target>::iterator it = targets.begin(); it != targets.end(); it++) {
+                std::shared_ptr<node> targ = it->n;
                 if (targ) {
                     boost::intrusive_ptr<listen_impl_func<H_STREAM> > li(
                         reinterpret_cast<listen_impl_func<H_STREAM>*>(listen_impl.get()));
@@ -148,7 +148,7 @@ namespace sodium {
             }
         }
 
-        bool node::link(void* holder, const SODIUM_SHARED_PTR<node>& targ)
+        bool node::link(void* holder, const std::shared_ptr<node>& targ)
         {
             bool changed;
             if (targ) {
@@ -166,14 +166,14 @@ namespace sodium {
 
         void node::unlink(void* holder)
         {
-            SODIUM_FORWARD_LIST<node::target>::iterator this_it;
-            for (SODIUM_FORWARD_LIST<node::target>::iterator last_it = targets.before_begin(); true; last_it = this_it) {
+            std::forward_list<node::target>::iterator this_it;
+            for (std::forward_list<node::target>::iterator last_it = targets.before_begin(); true; last_it = this_it) {
                 this_it = last_it;
                 ++this_it;
                 if (this_it == targets.end())
                     break;
                 if (this_it->h == holder) {
-                    SODIUM_SHARED_PTR<node> targ = this_it->n;
+                    std::shared_ptr<node> targ = this_it->n;
                     targets.erase_after(last_it);
                     if (targ) {
                         boost::intrusive_ptr<listen_impl_func<H_STREAM> > li(
@@ -185,10 +185,10 @@ namespace sodium {
             }
         }
 
-        void node::unlink_by_target(const SODIUM_SHARED_PTR<node>& targ)
+        void node::unlink_by_target(const std::shared_ptr<node>& targ)
         {
-            SODIUM_FORWARD_LIST<node::target>::iterator this_it;
-            for (SODIUM_FORWARD_LIST<node::target>::iterator last_it = targets.before_begin(); true; last_it = this_it) {
+            std::forward_list<node::target>::iterator this_it;
+            for (std::forward_list<node::target>::iterator last_it = targets.before_begin(); true; last_it = this_it) {
                 this_it = last_it;
                 ++this_it;
                 if (this_it == targets.end())
@@ -212,14 +212,14 @@ namespace sodium {
             else {
                 visited.insert(this);
                 rank = limit + 1;
-                for (SODIUM_FORWARD_LIST<node::target>::iterator it = targets.begin(); it != targets.end(); ++it)
+                for (std::forward_list<node::target>::iterator it = targets.begin(); it != targets.end(); ++it)
                     if (it->n)
                         it->n->ensure_bigger_than(visited, rank);
                 return true;
             }
         }
 
-        rank_t rankOf(const SODIUM_SHARED_PTR<node>& target)
+        rank_t rankOf(const std::shared_ptr<node>& target)
         {
             if (target.get() != NULL)
                 return target->rank;
@@ -267,7 +267,7 @@ namespace sodium {
             }
         }
 
-        void transaction_impl::prioritized(SODIUM_SHARED_PTR<node> target,
+        void transaction_impl::prioritized(std::shared_ptr<node> target,
                                            std::function<void(transaction_impl*)> f)
         {
             entryID id = next_entry_id;

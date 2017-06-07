@@ -23,15 +23,5 @@
 #define SODIUM_NODE_BITS   31
 #define SODIUM_CONSERVE_MEMORY
 #endif
-#define SODIUM_SHARED_PTR   std::shared_ptr
-#define SODIUM_MAKE_SHARED  std::make_shared
-#define SODIUM_WEAK_PTR     std::weak_ptr
-#define SODIUM_TUPLE        std::tuple
-#define SODIUM_MAKE_TUPLE   std::make_tuple
-#define SODIUM_TUPLE_GET    std::get
-#define SODIUM_FORWARD_LIST std::forward_list
-#ifndef SODIUM_THROW
-#define SODIUM_THROW(text)  throw std::runtime_error(text)
-#endif
 
 #endif
