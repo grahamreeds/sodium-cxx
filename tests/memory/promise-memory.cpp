@@ -2,7 +2,7 @@
  * Run with
  * valgrind --leak-check=full memory/promise-memory
  */
-#include <sodium/promise.h>
+#include <sodium/promise.hpp>
 #include <string>
 #include <iostream>
 

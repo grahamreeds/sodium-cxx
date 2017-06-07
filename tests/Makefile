@@ -16,13 +16,13 @@ OBJECT_FILES= \
     $(SRC)/sodium/time.o \
     $(SRC)/sodium/sodium.o
 
-SODIUM_HEADERS=$(SRC)/sodium/sodium.h $(SRC)/sodium/transaction.h $(SRC)/sodium/light_ptr.h $(SRC)/sodium/count_set.h $(SRC)/sodium/lock_pool.h
+SODIUM_HEADERS=$(SRC)/sodium/sodium.hpp $(SRC)/sodium/transaction.hpp $(SRC)/sodium/light_ptr.hpp $(SRC)/sodium/count_set.hpp $(SRC)/sodium/lock_pool.hpp
 
-$(SRC)/sodium/light_ptr.o:       $(SRC)/sodium/light_ptr.h $(SRC)/sodium/lock_pool.h
-$(SRC)/sodium/transaction.o:     $(SRC)/sodium/transaction.h $(SRC)/sodium/lock_pool.h $(SRC)/sodium/light_ptr.h $(SRC)/sodium/count_set.h
+$(SRC)/sodium/light_ptr.o:       $(SRC)/sodium/light_ptr.hpp $(SRC)/sodium/lock_pool.hpp
+$(SRC)/sodium/transaction.o:     $(SRC)/sodium/transaction.hpp $(SRC)/sodium/lock_pool.hpp $(SRC)/sodium/light_ptr.hpp $(SRC)/sodium/count_set.hpp
 $(SRC)/sodium/sodium.o:          $(SODIUM_HEADERS)
 $(SRC)/sodium/time.o:            $(SODIUM_HEADERS)
-test_sodium.o:                   $(SODIUM_HEADERS) test_sodium.h
+test_sodium.o:                   $(SODIUM_HEADERS) test_sodium.hpp
 test_time.o:                     $(SODIUM_HEADERS)
 memory/release-sink-machinery.o: $(SODIUM_HEADERS)
 memory/switch-memory.o:          $(SODIUM_HEADERS)

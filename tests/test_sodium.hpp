@@ -4,12 +4,12 @@
  *
  * C++ implementation courtesy of International Telematics Ltd.
  */
-#ifndef _TEST_SODIUM_H_
-#define _TEST_SODIUM_H_
+#ifndef _TEST_SODIUM_HPP_
+#define _TEST_SODIUM_HPP_
 
 #include <cppunit/TestCase.h>
 #include <cppunit/extensions/HelperMacros.h>
-#include <sodium/sodium.h>
+#include <sodium/sodium.hpp>
 #include <string>
 
 class test_sodium : public CppUnit::TestFixture {

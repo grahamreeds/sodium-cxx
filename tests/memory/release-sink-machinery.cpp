@@ -1,4 +1,4 @@
-#include <sodium/sodium.h>
+#include <sodium/sodium.hpp>
 #include <unistd.h>
 #include <string>
 

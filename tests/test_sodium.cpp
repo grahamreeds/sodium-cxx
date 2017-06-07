@@ -5,9 +5,9 @@
  * C++ implementation courtesy of International Telematics Ltd.
  */
 
-#include "test_sodium.h"
-#include <sodium/sodium.h>
-#include <sodium/router.h>
+#include "test_sodium.hpp"
+#include <sodium/sodium.hpp>
+#include <sodium/router.hpp>
 #include <boost/optional.hpp>
 
 #include <cppunit/ui/text/TestRunner.h>

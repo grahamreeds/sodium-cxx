@@ -1,5 +1,5 @@
-#include <sodium/sodium.h>
-#include <sodium/time.h>
+#include <sodium/sodium.hpp>
+#include <sodium/time.hpp>
 #include <queue>
 #include <iostream>
 #include <assert.h>
