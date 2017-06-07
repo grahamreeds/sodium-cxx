@@ -11,14 +11,14 @@
 #include <sodium/count_set.hpp>
 #include <sodium/light_ptr.hpp>
 #include <sodium/lock_pool.hpp>
+#include <sodium/unit.hpp>
+#include <sodium/mutex.hpp>
 #include <boost/optional.hpp>
 #include <boost/intrusive_ptr.hpp>
-#include <sodium/unit.hpp>
 #include <map>
 #include <set>
 #include <list>
 #include <memory>
-#include <mutex>
 #include <forward_list>
 #include <tuple>
 
@@ -29,9 +29,7 @@ namespace sodium {
     struct partition {
         partition();
         ~partition();
-#if !defined(SODIUM_SINGLE_THREADED)
-        std::recursive_mutex mx;
-#endif
+        sodium::recursive_mutex mx;
         int depth;
 
         bool processing_post;

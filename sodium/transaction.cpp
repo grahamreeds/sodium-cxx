@@ -89,24 +89,16 @@ namespace sodium {
 
     void partition::post(std::function<void()> action)
     {
-#if !defined(SODIUM_SINGLE_THREADED)
         mx.lock();
-#endif
         postQ.push_back(std::move(action));
-#if !defined(SODIUM_SINGLE_THREADED)
         mx.unlock();
-#endif
     }
 
     void partition::on_start(std::function<void()> action)
     {
-#if !defined(SODIUM_SINGLE_THREADED)
         mx.lock();
-#endif
         on_start_hooks.push_back(std::move(action));
-#if !defined(SODIUM_SINGLE_THREADED)
         mx.unlock();
-#endif
     }
 
     void partition::process_post()
@@ -123,13 +115,9 @@ namespace sodium {
                 while (postQ.begin() != postQ.end()) {
                     std::function<void()> action = *postQ.begin();
                     postQ.erase(postQ.begin());
-#if !defined(SODIUM_SINGLE_THREADED)
                     mx.unlock();
-#endif
                     action();
-#if !defined(SODIUM_SINGLE_THREADED)
                     mx.lock();
-#endif
                 }
                 processing_post = false;
 #if !defined(SODIUM_NO_EXCEPTIONS)
@@ -299,9 +287,7 @@ namespace sodium {
             if (impl_ == NULL) {
                 if (transaction_impl::part == nullptr)
                     transaction_impl::part = new partition;
-#if !defined(SODIUM_SINGLE_THREADED)
                 transaction_impl::part->mx.lock();
-#endif
                 if (!transaction_impl::part->processing_on_start_hooks) {
                     transaction_impl::part->processing_on_start_hooks = true;
                     try {
@@ -350,15 +336,11 @@ namespace sodium {
                         part->depth--;
                         global_current_transaction = NULL;
                         delete impl__;
-#if !defined(SODIUM_SINGLE_THREADED)
                         part->mx.unlock();
-#endif
                         throw;
                     }
                     part->process_post();
-#if !defined(SODIUM_SINGLE_THREADED)
                     part->mx.unlock();
-#endif
                 }
                 else
                     part->depth--;

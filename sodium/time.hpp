@@ -2,6 +2,7 @@
 #define _SODIUM_TIME_HPP_
 
 #include <sodium/sodium.hpp>
+#include <sodium/mutex.hpp>
 #include <memory>
 #include <boost/optional.hpp>
 #include <set>
@@ -13,59 +14,41 @@ namespace sodium {
         template <typename T>
         class thread_safe_priority_queue
         {
-            private:
-#if !defined(SODIUM_SINGLE_THREADED)
-                std::mutex lock;
-#endif
-                std::set<T> c;
+        private:
+            sodium::mutex lock;
+            std::set<T> c;
 
-            public:
-                void push(const T& value) {
-#if !defined(SODIUM_SINGLE_THREADED)
-                    lock.lock();
-#endif
-                    c.insert(value);
-#if !defined(SODIUM_SINGLE_THREADED)
+        public:
+            void push(const T& value) {
+                lock.lock();
+                c.insert(value);
+                lock.unlock();
+            }
+            template <class Fn>
+            boost::optional<T> pop_if(Fn f) {
+                lock.lock();
+                if (!c.empty() && f(*c.begin())) {
+                    boost::optional<T> ret(*c.begin());
+                    c.erase(c.begin());
                     lock.unlock();
-#endif
+                    return ret;
                 }
-                template <class Fn>
-                boost::optional<T> pop_if(Fn f) {
-#if !defined(SODIUM_SINGLE_THREADED)
-                    lock.lock();
-#endif
-                    if (!c.empty() && f(*c.begin())) {
-                        boost::optional<T> ret(*c.begin());
-                        c.erase(c.begin());
-#if !defined(SODIUM_SINGLE_THREADED)
-                        lock.unlock();
-#endif
-                        return ret;
-                    }
-#if !defined(SODIUM_SINGLE_THREADED)
+                lock.unlock();
+                return boost::optional<T>();
+            }
+            bool remove(const T& value) {
+                lock.lock();
+                auto it = c.find(value);
+                if (it == c.end()) {
                     lock.unlock();
-#endif
-                    return boost::optional<T>();
+                    return false;
                 }
-                bool remove(const T& value) {
-#if !defined(SODIUM_SINGLE_THREADED)
-                    lock.lock();
-#endif
-                    auto it = c.find(value);
-                    if (it == c.end()) {
-#if !defined(SODIUM_SINGLE_THREADED)
-                        lock.unlock();
-#endif
-                        return false;
-                    }
-                    else {
-                        c.erase(it);
-#if !defined(SODIUM_SINGLE_THREADED)
-                        lock.unlock();
-#endif
-                        return true;
-                    }
+                else {
+                    c.erase(it);
+                    lock.unlock();
+                    return true;
                 }
+            }
         };
     };
 

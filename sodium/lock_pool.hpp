@@ -8,20 +8,15 @@
 #define _SODIUM_LOCKPOOL_HPP_
 
 #include <sodium/config.hpp>
-
-#include <mutex>
+#include <sodium/mutex.hpp>
 #include <stdint.h>
 #include <limits.h>
 
 namespace sodium {
     namespace impl {
         struct spin_lock {
-#if defined(SODIUM_SINGLE_THREADED)
-            inline void lock() {}
-            inline void unlock() {}
-#else
             bool initialized;
-            std::mutex m;
+            sodium::mutex m;
             spin_lock() : initialized(true) {
             }
             inline void lock() {
@@ -33,13 +28,12 @@ namespace sodium {
             inline void unlock() {
                 if (initialized) m.unlock();
             }
-#endif
         };
-		#if defined(SODIUM_SINGLE_THREADED)
-			#define SODIUM_IMPL_LOCK_POOL_BITS 1
-		#else
-			#define SODIUM_IMPL_LOCK_POOL_BITS 7
-        #endif
+#if defined(SODIUM_SINGLE_THREADED)
+		#define SODIUM_IMPL_LOCK_POOL_BITS 1
+#else
+		#define SODIUM_IMPL_LOCK_POOL_BITS 7
+#endif
         extern spin_lock lock_pool[1<<SODIUM_IMPL_LOCK_POOL_BITS];
 
         // Use Knuth's integer hash function ("The Art of Computer Programming", section 6.4)
